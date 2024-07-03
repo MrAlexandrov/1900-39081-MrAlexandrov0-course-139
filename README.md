@@ -45,11 +45,11 @@
 1. Запустите сервис командой `make docker-start-service-debug`
 2. Зарегистрируйте нового пользователя через запрос в ручку `/register`
 ```
-curl -XPOST "htpp://localhost:8080/register" -F "email=me@ya.ru" -F "password=pswd"
+curl -XPOST "http://localhost:8080/register" -F "email=me@ya.ru" -F "password=pswd"
 ```
 2. Авторизуйтесь под своим новым пользователем
 ```
-curl -XPOST "htpp://localhost:8080/login" -F "email=me@ya.ru" -F "password=pswd"
+curl -XPOST "http://localhost:8080/login" -F "email=me@ya.ru" -F "password=pswd"
 ```
 В ответ придет JSON, содержащий идентификатор сессии, следующего вида: `{"id":"f39227e0-494e-460e-982b-80b081f8fa4e"}`. С помощью этого идентификатора будет происходить авторизация во всех остальных ручках. Его необходимо передавать в хедере с ключом `X-Ya-User-Ticket` 
 3. Сохраните свою первую закладку
@@ -122,9 +122,16 @@ make format
 ### Попробнее про фреймворк userver
 
 - Документация
-  https://userver.tech/index.html
+https://userver.tech/index.html
 
-- Документация про тесты
-    
 - Исходный код
-  https://github.com/userver-framework/userver
+https://github.com/userver-framework/userver
+
+- Шаблон сервиса
+https://github.com/userver-framework/service_template
+
+- Шаблон сервиса с базой
+https://github.com/userver-framework/pg_service_template
+
+- Полный список возможных команд сервиса
+https://github.com/userver-framework/pg_service_template?tab=readme-ov-file#makefile
