@@ -7,7 +7,7 @@ CREATE SCHEMA IF NOT EXISTS bookmarker;
 CREATE TABLE IF NOT EXISTS bookmarker.users (
     id TEXT PRIMARY KEY DEFAULT uuid_generate_v4(),
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL -- store password as plain text for simplicity
 );
 
 CREATE TABLE IF NOT EXISTS bookmarker.auth_sessions (
