@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 
+#include <userver/components/component_context.hpp>
 #include <userver/formats/json.hpp>
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/storages/postgres/cluster.hpp>

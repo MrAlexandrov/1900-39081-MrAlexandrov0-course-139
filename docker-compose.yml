@@ -17,7 +17,7 @@ services:
           - postgres
 
     bookmarker-service:
-        image: ghcr.io/userver-framework/docker-userver-build-base:v1a
+        image: ghcr.io/userver-framework/ubuntu-22.04-userver-pg:latest
         privileged: true
         environment:
           - POSTGRES_DB=bookmarker_db-1
@@ -36,13 +36,12 @@ services:
           - MAKE_OPTS
         volumes:
           - .:/bookmarker:rw
-          - ./third_party/userver/tools/docker:/tools:ro
           - ${TC_CORES_DIR:-./.cores}:/cores:rw
         ports:
           - 8080:8080
         working_dir: /bookmarker
         entrypoint:
-          - /tools/run_as_user.sh
+          - ./tests/run_as_user.sh
         depends_on:
           - postgres
         networks:

@@ -34,7 +34,7 @@ test-impl-%: build-impl-%
 	@cmake --build build_$* -j $(NPROCS) --target bookmarker_unittest
 	@cmake --build build_$* -j $(NPROCS) --target bookmarker_benchmark
 	@cd build_$* && ((test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V)
-	@pep8 tests
+	@pycodestyle tests
 
 # testsuite service runner
 service-impl-start-%: build-impl-%

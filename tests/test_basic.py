@@ -4,6 +4,7 @@ import pytest
 
 # Start the tests via `make test-debug` or `make test-release`
 
+
 async def test_multipart_form_data(service_client):
     with aiohttp.MultipartWriter('form-data') as data:
         payload = aiohttp.payload.StringPayload('test')
@@ -15,7 +16,7 @@ async def test_multipart_form_data(service_client):
     }
 
     response = await service_client.post(
-        '/register', 
+        '/register',
         data=data,
         headers=headers
     )

@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 
+#include <userver/components/component_context.hpp>
 #include <userver/crypto/hash.hpp>
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/server/http/http_status.hpp>
