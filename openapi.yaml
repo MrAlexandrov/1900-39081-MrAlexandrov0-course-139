@@ -65,6 +65,8 @@ paths:
                                 properties:
                                     id:
                                         type: string
+                '400':
+                    description: missing required parameters
     /login:
         post:
             description: login to system via credentials
