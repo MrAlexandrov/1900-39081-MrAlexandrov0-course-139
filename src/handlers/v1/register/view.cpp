@@ -41,8 +41,7 @@ public:
     }
 
     auto email = email_opt.value;
-    auto password =
-        userver::crypto::hash::Sha256(password_opt.value);
+    auto password = userver::crypto::hash::Sha256(password_opt.value);
 
     auto result = pg_cluster_->Execute(
         userver::storages::postgres::ClusterHostType::kMaster,
@@ -56,6 +55,12 @@ public:
         "UNION ALL "
         "SELECT id FROM bookmarker.users ",
         email, password);
+
+    if (result.IsEmpty()) {
+      auto &response = request.GetHttpResponse();
+      response.SetStatus(userver::server::http::HttpStatus::kInternalServerError);
+      return userver::formats::json::ToString(userver::formats::json::MakeObject("error", "error creating user"));
+    }
 
     userver::formats::json::ValueBuilder response;
     response["id"] = result.AsSingleRow<std::string>();

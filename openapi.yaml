@@ -67,6 +67,8 @@ paths:
                                         type: string
                 '400':
                     description: missing required parameters
+                '500':
+                    description: error creating user
     /login:
         post:
             description: login to system via credentials
@@ -94,6 +96,10 @@ paths:
                                 properties:
                                     id:
                                         type: string
+                '400':
+                    description: missing required parameters
+                '500':
+                    description: failed to create session
     /v1/bookmarks:
         post:
             description: creates new bookmark
