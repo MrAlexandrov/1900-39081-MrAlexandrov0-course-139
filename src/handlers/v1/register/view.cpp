@@ -54,7 +54,8 @@ public:
         "SELECT id FROM ins "
         "UNION ALL "
         "SELECT id FROM bookmarker.users ",
-        email, password);
+        email, password
+    );
 
     if (result.IsEmpty()) {
       auto &response = request.GetHttpResponse();

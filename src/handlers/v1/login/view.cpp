@@ -47,7 +47,8 @@ public:
         userver::storages::postgres::ClusterHostType::kMaster,
         "SELECT * FROM bookmarker.users "
         "WHERE email = $1 ",
-        email);
+        email
+    );
 
     if (userResult.IsEmpty()) {
       auto &response = request.GetHttpResponse();
@@ -66,9 +67,11 @@ public:
     auto result = pg_cluster_->Execute(
         userver::storages::postgres::ClusterHostType::kMaster,
         "INSERT INTO bookmarker.auth_sessions(user_id) VALUES($1) "
-        "ON CONFLICT DO NOTHING "
-        "RETURNING auth_sessions.id",
-        user.id);
+        "ON CONFLICT (user_id) DO UPDATE "
+        "SET id = uuid_generate_v4() "
+        "RETURNING id ",
+        user.id
+    );
 
     if (result.IsEmpty()) {
       auto &response = request.GetHttpResponse();

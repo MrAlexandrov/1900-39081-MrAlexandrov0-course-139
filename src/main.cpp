@@ -8,13 +8,13 @@
 #include <userver/utils/daemon_run.hpp>
 
 #include "handlers/v1/add-bookmark/view.hpp"
-#include "handlers/v1/get-bookmark/view.hpp"
 #include "handlers/v1/delete-bookmark/view.hpp"
+#include "handlers/v1/get-bookmark/view.hpp"
 #include "handlers/v1/get-bookmarks/view.hpp"
-#include "handlers/v1/register//view.hpp"
 #include "handlers/v1/login/view.hpp"
+#include "handlers/v1/register//view.hpp"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   auto component_list =
       userver::components::MinimalServerComponentList()
           .Append<userver::server::handlers::Ping>()

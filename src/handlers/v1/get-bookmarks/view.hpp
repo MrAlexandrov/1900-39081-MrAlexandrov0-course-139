@@ -7,6 +7,6 @@
 
 namespace bookmarker {
 
-void AppendGetBookmarks(userver::components::ComponentList& component_list);
+void AppendGetBookmarks(userver::components::ComponentList &component_list);
 
-}  // namespace bookmarker
+} // namespace bookmarker

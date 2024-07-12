@@ -36,7 +36,7 @@ public:
         if (!session) {
             auto& response = request.GetHttpResponse();
             response.SetStatus(userver::server::http::HttpStatus::kUnauthorized);
-            return {};
+            return userver::formats::json::ToString(userver::formats::json::MakeObject("error", "user is not authorized"));
         }
 
         auto request_body = userver::formats::json::FromString(request.RequestBody());
@@ -44,12 +44,18 @@ public:
         auto title = request_body["title"].As<std::optional<std::string>>();
         auto tag = request_body["tag"].As<std::optional<std::string>>();
 
+        if (!url.has_value() || !title.has_value()) {
+            auto& response = request.GetHttpResponse();
+            response.SetStatus(userver::server::http::HttpStatus::kBadRequest);
+            return userver::formats::json::ToString(userver::formats::json::MakeObject("error", "invalid input parameters"));
+        }
+
         auto result = pg_cluster_->Execute(
             userver::storages::postgres::ClusterHostType::kMaster,
             "WITH ins AS ( "
-            "INSERT INTO bookmarker.bookmarks(owner_id, url, title, tag) VALUES($1, $2, $3, $4) "
-            "ON CONFLICT DO NOTHING "
-            "RETURNING * "
+                "INSERT INTO bookmarker.bookmarks(owner_id, url, title, tag) VALUES($1, $2, $3, $4) "
+                "ON CONFLICT DO NOTHING "
+                "RETURNING * "
             ") "
             "SELECT * FROM bookmarker.bookmarks WHERE url = $1 "
             "UNION ALL "
@@ -57,8 +63,14 @@ public:
             session->user_id, url.value(), title.value(), tag
         );
 
+        if (result.IsEmpty()) {
+            auto &response = request.GetHttpResponse();
+            response.SetStatus(userver::server::http::HttpStatus::kInternalServerError);
+            return userver::formats::json::ToString(userver::formats::json::MakeObject("error", "failed to add bookmark"));
+        }
+
         auto bookmark = result.AsSingleRow<TBookmark>(userver::storages::postgres::kRowTag);
-        return ToString(userver::formats::json::ValueBuilder{bookmark}.ExtractValue());
+        return userver::formats::json::ToString(userver::formats::json::ValueBuilder{bookmark}.ExtractValue());
     }
 
 private:
