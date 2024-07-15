@@ -16,50 +16,36 @@
 
 namespace bookmarker {
 
-namespace {
+TFilters TFilters::Parse(const userver::server::http::HttpRequest& request) {
+  TFilters result;
 
-struct TFilters {
-  enum class ESortOrder {
-    ID = 0,
-    TITLE = 1,
-    URL = 2,
-    CREATED_TS = 3
-  } order_by = ESortOrder::ID;
-
-  size_t limit = 10;
-  std::optional<std::string> tag;
-
-  static TFilters Parse(const userver::server::http::HttpRequest &request) {
-    TFilters result;
-
-    if (request.HasArg("limit")) {
-      result.limit = std::stoul(request.GetArg("limit").c_str());
-    }
-
-    if (request.HasArg("tag")) {
-      result.tag = request.GetArg("tag");
-    }
-
-    if (request.HasArg("order_by")) {
-      static std::unordered_map<std::string, ESortOrder> mappings{
-          {"id", ESortOrder::ID},
-          {"title", ESortOrder::TITLE},
-          {"url", ESortOrder::URL},
-          {"created_ts", ESortOrder::CREATED_TS},
-      };
-      result.order_by = mappings[request.GetArg("order_by")];
-    }
-
-    return result;
+  if (request.HasArg("limit")) {
+    result.limit = std::stoul(request.GetArg("limit").c_str());
   }
-};
+
+  if (request.HasArg("tag")) {
+    result.tag = request.GetArg("tag");
+  }
+
+  if (request.HasArg("order_by")) {
+    static std::unordered_map<std::string, TFilters::ESortOrder> mappings{
+        {"id", TFilters::ESortOrder::ID},
+        {"title", TFilters::ESortOrder::TITLE},
+        {"url", TFilters::ESortOrder::URL},
+        {"created_ts", TFilters::ESortOrder::CREATED_TS},
+    };
+    result.order_by = mappings[request.GetArg("order_by")];
+  }
+
+  return result;
+}
 
 std::string BuildDbRequest(const TSession &session, const TFilters &filters) {
   std::ostringstream ss;
   ss << "SELECT * FROM bookmarker.bookmarks ";
   ss << "WHERE owner_id = '" << session.user_id << "' ";
   if (filters.tag) {
-    ss << " AND tag = '" << *filters.tag << "' ";
+    ss << "AND tag = '" << *filters.tag << "' ";
   }
   ss << "ORDER BY ";
   switch (filters.order_by) {
@@ -128,8 +114,6 @@ public:
 private:
   userver::storages::postgres::ClusterPtr pg_cluster_;
 };
-
-} // namespace
 
 void AppendGetBookmarks(userver::components::ComponentList &component_list) {
   component_list.Append<GetBookmarks>();
