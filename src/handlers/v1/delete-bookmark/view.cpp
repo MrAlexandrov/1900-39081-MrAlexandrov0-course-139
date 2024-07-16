@@ -17,60 +17,48 @@ namespace {
 
 class DeleteBookmark final : public userver::server::handlers::HttpHandlerBase {
 public:
-  static constexpr std::string_view kName = "handler-v1-delete-bookmark";
+    static constexpr std::string_view kName = "handler-v1-delete-bookmark";
 
-  DeleteBookmark(const userver::components::ComponentConfig &config,
-                 const userver::components::ComponentContext &component_context)
-      : HttpHandlerBase(config, component_context),
-        pg_cluster_(
-            component_context
-                .FindComponent<userver::components::Postgres>("postgres-db-1")
-                .GetCluster()) {}
+    DeleteBookmark(const userver::components::ComponentConfig& config,
+                   const userver::components::ComponentContext& component_context)
+        : HttpHandlerBase(config, component_context),
+            pg_cluster_(
+                component_context
+                    .FindComponent<userver::components::Postgres>("postgres-db-1")
+                    .GetCluster()) {}
 
-  std::string HandleRequestThrow(
-      const userver::server::http::HttpRequest &request,
-      userver::server::request::RequestContext &) const override {
-    auto session = GetSessionInfo(pg_cluster_, request);
-    if (!session) {
-        auto &response = request.GetHttpResponse();
-        response.SetStatus(userver::server::http::HttpStatus::kUnauthorized);
-        return userver::formats::json::ToString(userver::formats::json::MakeObject("error", "user is not authorized"));
+    std::string HandleRequestThrow(
+        const userver::server::http::HttpRequest& request,
+        userver::server::request::RequestContext&
+    ) const override {
+        auto session = GetSessionInfo(pg_cluster_, request);
+        if (!session) {
+            auto& response = request.GetHttpResponse();
+            response.SetStatus(userver::server::http::HttpStatus::kUnauthorized);
+            return {};
+        }
+
+        const auto& id = request.GetPathArg("id");
+        auto result = pg_cluster_->Execute(
+            userver::storages::postgres::ClusterHostType::kMaster,
+            "DELETE FROM bookmarker.bookmarks "
+            "WHERE id = $1 ",
+            id
+        );
+
+        userver::formats::json::ValueBuilder response;
+        response["id"] = id;
+        return userver::formats::json::ToString(response.ExtractValue());
     }
-
-    const auto &id = request.GetPathArg("id");
-
-    if (id.empty()) {
-        auto& response = request.GetHttpResponse();
-        response.SetStatus(userver::server::http::HttpStatus::kBadRequest);
-        return userver::formats::json::ToString(userver::formats::json::MakeObject("error", "missing required parameters"));
-    }
-
-    auto result = pg_cluster_->Execute(
-        userver::storages::postgres::ClusterHostType::kMaster,
-        "DELETE FROM bookmarker.bookmarks "
-        "WHERE id = $1 AND owner_id = $2",
-        id, session->user_id
-    );
-
-    if (result.RowsAffected() == 0) {
-        auto &response = request.GetHttpResponse();
-        response.SetStatus(userver::server::http::HttpStatus::kInternalServerError);
-        return userver::formats::json::ToString(userver::formats::json::MakeObject("error", "failed to delete bookbark"));
-    }
-
-    userver::formats::json::ValueBuilder response;
-    response["id"] = id;
-    return userver::formats::json::ToString(response.ExtractValue());
-  }
 
 private:
-  userver::storages::postgres::ClusterPtr pg_cluster_;
+    userver::storages::postgres::ClusterPtr pg_cluster_;
 };
 
-} // namespace
+}  // namespace
 
-void AppendDeleteBookmark(userver::components::ComponentList &component_list) {
-  component_list.Append<DeleteBookmark>();
+void AppendDeleteBookmark(userver::components::ComponentList& component_list) {
+    component_list.Append<DeleteBookmark>();
 }
 
-} // namespace bookmarker
+}  // namespace bookmarker

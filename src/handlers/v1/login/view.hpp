@@ -4,6 +4,6 @@
 
 namespace bookmarker {
 
-void AppendLoginUser(userver::components::ComponentList &component_list);
+void AppendLoginUser(userver::components::ComponentList& component_list);
 
-} // namespace bookmarker
+}  // namespace bookmarker
