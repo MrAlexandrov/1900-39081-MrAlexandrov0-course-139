@@ -65,6 +65,12 @@ paths:
                                 properties:
                                     id:
                                         type: string
+                '400':
+                    description: missing required parameters
+                '409':
+                    description: user with this email already exists
+                '500':
+                    description: error creating user
     /login:
         post:
             description: login to system via credentials
@@ -92,6 +98,10 @@ paths:
                                 properties:
                                     id:
                                         type: string
+                '400':
+                    description: missing required parameters
+                '500':
+                    description: failed to create session
     /v1/bookmarks:
         post:
             description: creates new bookmark
@@ -126,7 +136,12 @@ paths:
                 '400':
                     description: invalid input parameters
                 '401':
+                    description: user is not authorized
                     $ref: "#/components/responses/UnauthorizedError"
+                '409':
+                    description: bookmark with the same URL already exists
+                '500':
+                    description: failed to add bookbark
         get:
             description: list all bookmarks with filters
             parameters:
@@ -167,7 +182,10 @@ paths:
                                         items:
                                             $ref: '#/components/schemas/bookmark'
                 '401':
+                    description: user is not authorized
                     $ref: "#/components/responses/UnauthorizedError"
+                '500':
+                    description: failed to get bookmarks
     /v1/bookmarks/{id}:
         get:
             description: get bookmark by its identifier
@@ -187,7 +205,10 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/bookmark'
+                '400':
+                    description: missing required parameters
                 '401':
+                    description: user is not authorized
                     $ref: "#/components/responses/UnauthorizedError"
                 '404':
                     description: bookmark is not found
@@ -215,7 +236,12 @@ paths:
                                         type: string
                                 required:
                                     - id
+                '400':
+                    description: missing required parameters
                 '401':
+                    description: user is not authorized
                     $ref: "#/components/responses/UnauthorizedError"
                 '404':
                     description: bookmark is not found
+                '500':
+                    description: failed to delete bookbark

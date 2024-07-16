@@ -7,6 +7,6 @@
 
 namespace bookmarker {
 
-void AppendDeleteBookmark(userver::components::ComponentList& component_list);
+void AppendDeleteBookmark(userver::components::ComponentList &component_list);
 
-}  // namespace bookmarker
+} // namespace bookmarker
