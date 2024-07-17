@@ -1,5 +1,6 @@
 #include <userver/utest/utest.hpp>
-#include "../src/handlers/v1/get-bookmarks/view.hpp"
+#include "../src/models/session.hpp"
+#include "../src/models/filter.hpp"
 
 namespace {
 
