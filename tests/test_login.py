@@ -12,7 +12,7 @@ async def test_login_missing_email(service_client):
 
 
 async def test_login_missing_password(service_client):
-    email = "login_missing_password"
+    email = "login_missing_password@ya.ru"
     password = None 
     data = await create_multipart_data(email=email, password=password)
     headers = create_headers_form_data(data)
@@ -30,7 +30,7 @@ async def test_login_missing_parametres(service_client):
 
 
 async def test_login_no_user(service_client):
-    email = "login_no_user"
+    email = "login_no_user@ya.ru"
     password = "login_no_user"
     data = await create_multipart_data(email=email, password=password)
     headers = create_headers_form_data(data)
@@ -39,7 +39,7 @@ async def test_login_no_user(service_client):
 
 
 async def test_login_wrong_password(service_client, register_user):
-    email = "login_wrong_password"
+    email = "login_wrong_password@ya.ru"
     password = "login_wrong_password"
     await register_user(email, password)
 
@@ -50,7 +50,7 @@ async def test_login_wrong_password(service_client, register_user):
 
 
 async def test_login_success(service_client, register_user):
-    email = "login_success"
+    email = "login_success@ya.ru"
     password = "login_success"
     await register_user(email=email, password=password)
 

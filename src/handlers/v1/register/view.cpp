@@ -10,7 +10,8 @@
 #include <userver/storages/postgres/component.hpp>
 #include <userver/utils/assert.hpp>
 
-#include "../../../models/bookmark.hpp"
+// #include "../../../models/bookmark.hpp"
+#include "../../../models/validate.hpp"
 
 namespace bookmarker {
 
@@ -39,11 +40,32 @@ public:
       response.SetStatus(userver::server::http::HttpStatus::kBadRequest);
       return userver::formats::json::ToString(
           userver::formats::json::MakeObject("error",
-                                             "missing required parameters"));
+                                             "missing required parameters")
+      );
     }
 
     auto email = email_opt.value;
-    auto password = userver::crypto::hash::Sha256(password_opt.value);
+    auto password = password_opt.value;
+
+    if (!userver::utils::regex_match(email, email_pattern)) {
+      auto &response = request.GetHttpResponse();
+      response.SetStatus(userver::server::http::HttpStatus::kBadRequest);
+      return userver::formats::json::ToString(
+        userver::formats::json::MakeObject("error", 
+                                           "wrong email pattern")
+      );
+    }
+
+    if (!userver::utils::regex_match(password, password_pattern)) {
+      auto &response = request.GetHttpResponse();
+      response.SetStatus(userver::server::http::HttpStatus::kBadRequest);
+      return userver::formats::json::ToString(
+        userver::formats::json::MakeObject("error", 
+                                           "too weak password")
+      );
+    }
+
+    auto hashed_password = userver::crypto::hash::Sha256(password);
 
     auto exist_email = pg_cluster_->Execute(
         userver::storages::postgres::ClusterHostType::kSlave,
@@ -56,8 +78,9 @@ public:
       auto &response = request.GetHttpResponse();
       response.SetStatus(userver::server::http::HttpStatus::kConflict);
       return userver::formats::json::ToString(
-          userver::formats::json::MakeObject(
-              "error", "user with this email already exists"));
+          userver::formats::json::MakeObject("error", 
+                                             "user with this email already exists")
+      );
     }
 
     auto result = pg_cluster_->Execute(
@@ -71,14 +94,15 @@ public:
         "SELECT id FROM ins "
         "UNION ALL "
         "SELECT id FROM bookmarker.users WHERE email = $1 ",
-        email, password);
+        email, hashed_password);
 
     if (result.IsEmpty()) {
       auto &response = request.GetHttpResponse();
       response.SetStatus(
           userver::server::http::HttpStatus::kInternalServerError);
       return userver::formats::json::ToString(
-          userver::formats::json::MakeObject("error", "error creating user"));
+          userver::formats::json::MakeObject("error", "error creating user")
+      );
     }
 
     userver::formats::json::ValueBuilder response;

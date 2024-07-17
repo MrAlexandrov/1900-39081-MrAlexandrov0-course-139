@@ -3,7 +3,7 @@ from .conftest import GET_BOOKMARK_URL, ADD_BOOKMARK_URL, create_bookmark_data, 
 
 
 async def test_get_bookmark_success(service_client, register_user, login_user, add_bookmark):
-    email = "get_success"
+    email = "get_success@ya.ru"
     password = "get_success"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -29,7 +29,7 @@ async def test_get_bookmark_success(service_client, register_user, login_user, a
 
 
 async def test_get_non_existing_bookmark(service_client, register_user, login_user):
-    email = "non_exist"
+    email = "non_exist@ya.ru"
     password = "non_exist"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -47,9 +47,9 @@ async def test_get_bookmark_unauthorized(service_client):
 
 
 async def test_get_bookmark_wrong_user(service_client, register_user, login_user):
-    email1 = "firts_user"
+    email1 = "firts_user@ya.ru"
     password1 = "first_password"
-    email2 = "second_user"
+    email2 = "second_user@ya.ru"
     password2 = "second_password"
 
     await register_user(email1, password1)

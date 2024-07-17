@@ -11,6 +11,7 @@
 #include <userver/utils/assert.hpp>
 
 #include "../../../models/user.hpp"
+#include "../../../models/validate.hpp"
 
 namespace bookmarker {
 
@@ -43,7 +44,16 @@ public:
     }
 
     auto email = email_opt.value;
-    auto password = userver::crypto::hash::Sha256(password_opt.value);
+    auto password = password_opt.value;
+
+    if (!userver::utils::regex_match(email, email_pattern)) {
+      auto &response = request.GetHttpResponse();
+      response.SetStatus(userver::server::http::HttpStatus::kBadRequest);
+      return userver::formats::json::ToString(
+        userver::formats::json::MakeObject("error", "wrong email pattern"));
+    }
+
+    auto hashed_password = userver::crypto::hash::Sha256(password);
 
     auto userResult = pg_cluster_->Execute(
         userver::storages::postgres::ClusterHostType::kSlave,
@@ -61,7 +71,7 @@ public:
 
     auto user =
         userResult.AsSingleRow<TUser>(userver::storages::postgres::kRowTag);
-    if (password != user.password) {
+    if (hashed_password != user.password) {
       auto &response = request.GetHttpResponse();
       response.SetStatus(userver::server::http::HttpStatus::kNotFound);
       return userver::formats::json::ToString(

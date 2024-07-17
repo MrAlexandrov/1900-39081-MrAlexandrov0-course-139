@@ -3,7 +3,7 @@ from .conftest import ADD_BOOKMARK_URL, create_bookmark_data, create_headers_jso
 
 
 async def test_add_bookmark_missing_url(service_client, register_user, login_user):
-    email = "add_bookmark_missing_url"
+    email = "add_bookmark_missing_url@ya.ru"
     password = "add_bookmark_missing_url"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -17,7 +17,7 @@ async def test_add_bookmark_missing_url(service_client, register_user, login_use
     assert response.status == 400
 
 async def test_add_bookmark_missing_title(service_client, register_user, login_user):
-    email = "add_bookmark_missing_title"
+    email = "add_bookmark_missing_title@ya.ru"
     password = "add_bookmark_missing_title"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -31,7 +31,7 @@ async def test_add_bookmark_missing_title(service_client, register_user, login_u
     assert response.status == 400
 
 async def test_add_bookmark_missing_tag(service_client, register_user, login_user):
-    email = "add_bookmark_missing_tag"
+    email = "add_bookmark_missing_tag@ya.ru"
     password = "add_bookmark_missing_tag"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -52,7 +52,7 @@ async def test_add_bookmark_missing_tag(service_client, register_user, login_use
     assert "created_ts" in json_response
 
 async def test_add_bookmark_same_url(service_client, register_user, login_user):
-    email = "add_bookmark_same_url"
+    email = "add_bookmark_same_url@ya.ru"
     password = "add_bookmark_same_url"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -83,7 +83,7 @@ async def test_add_bookmark_same_url(service_client, register_user, login_user):
 
 
 async def test_add_bookmark_same_title(service_client, register_user, login_user):
-    email = "add_bookmark_same_title"
+    email = "add_bookmark_same_title@ya.ru"
     password = "add_bookmark_same_title"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -125,7 +125,7 @@ async def test_add_bookmark_same_title(service_client, register_user, login_user
 
 
 async def test_add_bookmark_same_tag(service_client, register_user, login_user):
-    email = "add_bookmark_same_tag"
+    email = "add_bookmark_same_tag@ya.ru"
     password = "add_bookmark_same_tag"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -165,7 +165,7 @@ async def test_add_bookmark_same_tag(service_client, register_user, login_user):
 
 
 async def test_add_bookmark_success(service_client, register_user, login_user):
-    email = "add_bookmark_success"
+    email = "add_bookmark_success@ya.ru"
     password = "add_bookmark_success"
     await register_user(email, password)
     user_id = await login_user(email, password)

@@ -12,7 +12,7 @@ async def test_register_missing_email(service_client):
 
 
 async def test_register_missing_password(service_client):
-    email = "register_missing_password"
+    email = "register_missing_password@ya.ru"
     password = None
     data = await create_multipart_data(email=email, password=password)
     headers = create_headers_form_data(data)
@@ -30,7 +30,7 @@ async def test_register_missing_parametres(service_client):
 
 
 async def test_register_same_email(service_client):
-    email = "register_same_email"
+    email = "register_same_email@ya.ru"
     password1 = "first_password"
     password2 = "second_password"
     data = await create_multipart_data(email=email, password=password1)
@@ -48,7 +48,7 @@ async def test_register_same_email(service_client):
 
 
 async def test_register_success(service_client):
-    email = "register_success"
+    email = "register_success@ya.ru"
     password = "register_success"
     data = await create_multipart_data(email=email, password=password)
     headers = create_headers_form_data(data)

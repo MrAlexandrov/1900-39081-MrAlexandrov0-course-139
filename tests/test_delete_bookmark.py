@@ -3,7 +3,7 @@ from .conftest import DELETE_BOOKMARK_URL, ADD_BOOKMARK_URL, create_bookmark_dat
 
 
 async def test_delete_bookmark_success(service_client, register_user, login_user, add_bookmark):
-    email = "delete_bookmark_success"
+    email = "delete_bookmark_success@ya.ru"
     password = "delete_bookmark_success"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -20,7 +20,7 @@ async def test_delete_bookmark_success(service_client, register_user, login_user
 
 
 async def test_delete_non_existing_bookmark(service_client, register_user, login_user):
-    email = "delete_non_existing_bookmark"
+    email = "delete_non_existing_bookmark@ya.ru"
     password = "delete_non_existing_bookmark"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -41,9 +41,9 @@ async def test_delete_bookmark_unauthorized(service_client):
 
 
 async def test_delete_bookmark_wrong_user(service_client, register_user, login_user):
-    email1 = "first_email"
+    email1 = "first_email@ya.ru"
     password1 = "first_password"
-    email2 = "second_email"
+    email2 = "second_email@ya.ru"
     password2 = "second_password"
 
     assert email1 != email2

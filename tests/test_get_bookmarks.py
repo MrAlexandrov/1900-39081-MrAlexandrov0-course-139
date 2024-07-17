@@ -8,7 +8,7 @@ async def test_get_bookmarks_unauthorized(service_client):
 
 
 async def test_get_bookmarks_empty(service_client, register_user, login_user):
-    email = "get_bookmarks_empty"
+    email = "get_bookmarks_empty@ya.ru"
     password = "get_bookmarks_empty"
     await register_user(email, password)
     user_id = await login_user(email, password)
@@ -24,9 +24,9 @@ async def test_get_bookmarks_empty(service_client, register_user, login_user):
 
 
 async def test_get_bookmarks_different_user(service_client, register_user, login_user, add_bookmark):
-    email1 = "get_bookmarks_user1"
+    email1 = "get_bookmarks_user1@ya.ru"
     password1 = "get_bookmarks_user1"
-    email2 = "get_bookmarks_user2"
+    email2 = "get_bookmarks_user2@ya.ru"
     password2 = "get_bookmarks_user2"
 
     await register_user(email1, password1)
@@ -52,7 +52,7 @@ async def test_get_bookmarks_different_user(service_client, register_user, login
 
 
 async def test_get_bookmarks_success(service_client, register_user, login_user, add_bookmark):
-    email = "get_bookmarks_success"
+    email = "get_bookmarks_success@ya.ru"
     password = "get_bookmarks_success"
     await register_user(email, password)
     user_id = await login_user(email, password)
