@@ -19,6 +19,11 @@ struct TFilters {
   size_t limit = 10;
   std::optional<std::string> tag;
 
+  static std::optional<TFilters> 
+  Parse(const std::optional<std::string>& limit_str,
+        const std::optional<std::string>& tag_str,
+        const std::optional<std::string>& order_by_str);
+
   static std::optional<TFilters>
   Parse(const userver::server::http::HttpRequest &request);
 };

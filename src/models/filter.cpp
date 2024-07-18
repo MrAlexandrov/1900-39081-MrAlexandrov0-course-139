@@ -2,37 +2,69 @@
 
 namespace bookmarker {
 
-std::optional<TFilters>
-TFilters::Parse(const userver::server::http::HttpRequest &request) {
+std::optional<TFilters> 
+TFilters::Parse(const std::optional<std::string>& limit_str,
+                const std::optional<std::string>& tag_str,
+                const std::optional<std::string>& order_by_str) {
   TFilters result;
 
-  if (request.HasArg("limit")) {
-    long long temp = std::stol(request.GetArg("limit").c_str());
-    if (temp < 0)
+  if (limit_str) {
+    try {
+      long long temp = std::stol(limit_str.value());
+      if (temp < 0) {
+        return std::nullopt;
+      }
+      result.limit = static_cast<size_t>(temp);
+    } catch (const std::exception&) {
       return std::nullopt;
-    result.limit = static_cast<size_t>(temp);
+    }
   }
 
-  if (request.HasArg("tag")) {
-    result.tag = request.GetArg("tag");
+  if (tag_str) {
+    result.tag = tag_str;
   }
 
-  if (request.HasArg("order_by")) {
-    static std::unordered_map<std::string, TFilters::ESortOrder> mappings{
-        {"id", TFilters::ESortOrder::ID},
-        {"title", TFilters::ESortOrder::TITLE},
-        {"url", TFilters::ESortOrder::URL},
-        {"created_ts", TFilters::ESortOrder::CREATED_TS},
+  if (order_by_str) {
+    static const std::unordered_map<std::string, TFilters::ESortOrder> mappings{
+      {"id", TFilters::ESortOrder::ID},
+      {"title", TFilters::ESortOrder::TITLE},
+      {"url", TFilters::ESortOrder::URL},
+      {"created_ts", TFilters::ESortOrder::CREATED_TS},
     };
-    auto order_by = request.GetArg("order_by");
-    auto it = mappings.find(order_by);
-    if (it == mappings.end()) { // Сортировка по несуществующему параметру
+    auto it = mappings.find(order_by_str.value());
+    if (it == mappings.end()) {
       return std::nullopt;
     }
     result.order_by = it->second;
   }
 
   return result;
+}
+
+std::optional<TFilters>
+TFilters::Parse(const userver::server::http::HttpRequest &request) {
+  std::optional<std::string> limit;
+  if (request.HasArg("limit")) {
+    limit = request.GetArg("limit");
+  } else {
+    limit = std::nullopt;
+  }
+  std::optional<std::string> tag;
+  if (request.HasArg("tag")) {
+    tag = request.GetArg("tag");
+  } else {
+    tag = std::nullopt;
+  }
+  std::optional<std::string> order_by;
+  if (request.HasArg("order_by")) {
+    order_by = request.GetArg("order_by");
+  } else {
+    order_by = std::nullopt;
+  }
+  return Parse(limit,
+               tag,
+               order_by
+  );
 }
 
 DbQuery BuildDbRequest(const TSession &session, const TFilters &filters) {

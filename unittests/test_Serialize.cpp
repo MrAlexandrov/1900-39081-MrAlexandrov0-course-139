@@ -1,7 +1,4 @@
 #include <userver/utest/utest.hpp>
-#include <userver/server/http/http_request.hpp>
-#include <userver/formats/json/value.hpp>
-#include <userver/formats/json/value_builder.hpp>
 #include "../src/models/bookmark.hpp"
 
 namespace {
