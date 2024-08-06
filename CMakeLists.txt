@@ -28,6 +28,8 @@ add_library(${PROJECT_NAME}_objs OBJECT
 	src/models/bookmark.hpp
 	src/models/bookmark.cpp
 	src/models/session.hpp
+	src/models/filter.hpp
+	src/models/filter.cpp
 	src/models/user.hpp
 	src/handlers/lib/auth.hpp
 	src/handlers/lib/auth.cpp
@@ -54,7 +56,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 
 # Unit Tests
 add_executable(${PROJECT_NAME}_unittest
-	unittests/basic.cpp
+	unittests/test_BuildDbRequest.cpp
+	unittests/test_Serialize.cpp
+	unittests/test_Validate.cpp
+	unittests/test_Parse.cpp
 )
 target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs userver::utest)
 add_google_tests(${PROJECT_NAME}_unittest)
